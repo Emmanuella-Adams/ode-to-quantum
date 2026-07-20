@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ChevronDown, CheckCircle2, Lock, PlayCircle, Network, BookOpen, Activity, Cpu } from 'lucide-react';
+import { ChevronRight, ChevronDown, CheckCircle2, Lock, PlayCircle, Network, BookOpen, Activity, Cpu, Sparkles } from 'lucide-react';
 import { lessonsData, Lesson } from '../data/lessonsData';
+import { ViewType } from './Navbar';
 
 interface CurriculumProps {
   completedLessons: string[];
   setActiveLessonId: (id: string) => void;
-  setView: (v: 'home' | 'mission' | 'playground' | 'notebook' | 'resources' | 'about') => void;
+  setView: (v: ViewType) => void;
 }
 
 export function Curriculum({ completedLessons, setActiveLessonId, setView }: CurriculumProps) {
@@ -51,6 +52,29 @@ export function Curriculum({ completedLessons, setActiveLessonId, setView }: Cur
           {completedLessons.length} / {lessonsData.length} COMPLETE
         </span>
       </div>
+
+      {completedLessons.includes('l20') && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-5 border border-quantum-blue/40 bg-quantum-blue/5 rounded-[14px] flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left font-mono"
+        >
+          <div className="space-y-1">
+            <h4 className="text-quantum-blue text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 justify-center sm:justify-start">
+              <Sparkles size={13} className="animate-pulse" /> SPACE CADET COMMISSION READY
+            </h4>
+            <p className="text-[11px] text-quantum-muted">
+              You have completed all mission objectives! Access fleet command and print your graduation certificate.
+            </p>
+          </div>
+          <button
+            onClick={() => setView('graduation')}
+            className="px-4 py-2 bg-quantum-blue/15 hover:bg-quantum-blue/25 border border-quantum-blue/40 text-quantum-blue rounded-[10px] text-[11px] font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1"
+          >
+            Claim Certificate <ChevronRight size={12} />
+          </button>
+        </motion.div>
+      )}
 
       <div className="flex flex-col gap-4">
         {phases.map((phase) => {

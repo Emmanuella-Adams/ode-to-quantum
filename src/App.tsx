@@ -15,6 +15,7 @@ import { PlaygroundView } from './components/PlaygroundView';
 import { NotebookView } from './components/NotebookView';
 import { ResourcesView } from './components/ResourcesView';
 import { AboutView } from './components/AboutView';
+import { GraduationView } from './components/GraduationView';
 
 export default function App() {
   const [view, setView] = useState<ViewType>('home');
@@ -79,6 +80,7 @@ export default function App() {
               >
                 <Hero setView={setView} introDone={introDone} />
                 <motion.div 
+                  id="curriculum-section"
                   initial={{ opacity: introDone ? 1 : 0 }}
                   animate={{ opacity: introDone ? 1 : 0 }}
                   transition={{ duration: 1.5 }}
@@ -112,6 +114,7 @@ export default function App() {
                   setCompletedLessons={setCompletedLessons}
                   mathLensActive={mathLensActive}
                   onBack={() => setView('home')} 
+                  onGraduate={() => setView('graduation')}
                 />
               </motion.div>
             )}
@@ -157,6 +160,17 @@ export default function App() {
                 transition={{ duration: 0.8, ease: "easeInOut" }}
               >
                 <AboutView />
+              </motion.div>
+            )}
+            {view === 'graduation' && (
+              <motion.div
+                key="graduation"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.02 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+              >
+                <GraduationView onBack={() => setView('home')} />
               </motion.div>
             )}
           </AnimatePresence>

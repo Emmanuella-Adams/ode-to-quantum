@@ -14,6 +14,9 @@ export interface Lesson {
   code: {
     notebookCode: string;
     simulatedOutput: string;
+    hint?: string;
+    solution?: string;
+    checkCode?: (code: string) => boolean;
   };
   challenge: {
     prompt: string;
@@ -52,7 +55,10 @@ export const lessonsData: Lesson[] = [
     },
     code: {
       notebookCode: '# Welcome Cadet! Check Python environment\nimport sys\nprint(f"System active. Python version: {sys.version.split()[0]}")',
-      simulatedOutput: 'System active. Python version: 3.10.8\nArchimedes Quantum Link: ESTABLISHED'
+      simulatedOutput: 'System active. Python version: 3.10.8\nArchimedes Quantum Link: ESTABLISHED',
+      hint: 'Simply click "Run Cell" to verify your connection and print the active status.',
+      solution: '# Welcome Cadet! Check Python environment\nimport sys\nprint(f"System active. Python version: {sys.version.split()[0]}")',
+      checkCode: () => true
     },
     challenge: {
       prompt: 'Toggle the system link switch below to establish telemetry connection with the Archimedes AI.',
@@ -284,8 +290,11 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.h(0) # Apply Hadamard gate\nprint(qc)',
-      simulatedOutput: '     ┌───┐\nq_0: ┤ H ├\n     └───┘'
+      notebookCode: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\n# Apply Hadamard gate to qubit 0 below\n\nprint(qc)',
+      simulatedOutput: '     ┌───┐\nq_0: ┤ H ├\n     └───┘',
+      hint: 'Type qc.h(0) to apply the Hadamard gate to qubit 0.',
+      solution: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.h(0)\nprint(qc)',
+      checkCode: (code) => code.replace(/\s+/g, '').includes('qc.h(0)')
     },
     challenge: {
       prompt: 'Apply the Hadamard (H) gate to the input |0⟩ state to put the qubit in superposition.',
@@ -329,8 +338,14 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'from qiskit import QuantumCircuit, transpile\nfrom qiskit_aer import AerSimulator\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nsim = AerSimulator()\njob = sim.run(qc, shots=100)\nprint(job.result().get_counts())',
-      simulatedOutput: '{"0": 48, "1": 52}'
+      notebookCode: 'from qiskit import QuantumCircuit, transpile\nfrom qiskit_aer import AerSimulator\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nsim = AerSimulator()\n# Change shots to 100 or more below\njob = sim.run(qc, shots=10)\nprint(job.result().get_counts())',
+      simulatedOutput: '{"0": 48, "1": 52}',
+      hint: 'Modify the shots parameter in sim.run(qc, shots=10) to shots=100.',
+      solution: 'from qiskit import QuantumCircuit, transpile\nfrom qiskit_aer import AerSimulator\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nsim = AerSimulator()\njob = sim.run(qc, shots=100)\nprint(job.result().get_counts())',
+      checkCode: (code) => {
+        const match = code.match(/shots\s*=\s*(\d+)/);
+        return match ? parseInt(match[1]) >= 100 : false;
+      }
     },
     challenge: {
       prompt: 'Set the measurement trials to 100 or higher and run the simulator to collapse the state vectors and gather statistics.',
@@ -376,8 +391,14 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'qc = QuantumCircuit(1)\nqc.x(0) # Apply X gate\nqc.z(0) # Apply Z gate\nprint(qc)',
-      simulatedOutput: '     ┌───┐┌───┐\nq_0: ┤ X ├┤ Z ├\n     └───┘└───┘'
+      notebookCode: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\n# Apply X gate then H gate below\n\nprint(qc)',
+      simulatedOutput: '     ┌───┐┌───┐\nq_0: ┤ X ├┤ H ├\n     └───┘└───┘',
+      hint: 'Apply X gate with qc.x(0) and Hadamard gate with qc.h(0) on qubit 0.',
+      solution: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.x(0)\nqc.h(0)\nprint(qc)',
+      checkCode: (code) => {
+        const c = code.replace(/\s+/g, '');
+        return c.includes('qc.x(0)') && c.includes('qc.h(0)');
+      }
     },
     challenge: {
       prompt: 'Apply the Pauli-X gate (bit-flip), and then apply the Hadamard (H) gate to the qubit to put it into the state |-⟩.',
@@ -421,8 +442,14 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'qc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure([0,1], [0,1])\nprint(qc.draw(output="text"))',
-      simulatedOutput: '     ┌───┐     ┌─┐   \nq_0: ┤ H ├──■──┤M├───\n     └───┘┌─┴─┐└╥┘┌─┐\nq_1: ─────┤ X ├─╫─┤M├\n          └───┘ ║ └╥┘\nc: 2/═══════════╩══╩═\n                0  1 '
+      notebookCode: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1, 1)\n# Apply Hadamard and measure qubit 0 below\n\nprint(qc)',
+      simulatedOutput: '     ┌───┐┌─┐\nq_0: ┤ H ├┤M├\n     └───┘└╥┘\nc: 1/══════╩═\n           0 ',
+      hint: 'Add a Hadamard gate with qc.h(0) and measurement with qc.measure(0, 0).',
+      solution: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(1, 1)\nqc.h(0)\nqc.measure(0, 0)\nprint(qc)',
+      checkCode: (code) => {
+        const c = code.replace(/\s+/g, '');
+        return c.includes('qc.h(0)') && c.includes('qc.measure(0,0)');
+      }
     },
     challenge: {
       prompt: 'Construct a simple circuit: place a Hadamard (H) gate on the wire, and append a Measurement (M) gate to the qubit.',
@@ -467,8 +494,14 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'qc = QuantumCircuit(2, 2)\nqc.h(0)\nqc.cx(0, 1) # Entangle q0 and q1\nqc.measure_all()\nprint("Bell state ready.")',
-      simulatedOutput: 'Bell state ready.\nMeasured correlations: P(00)=50%, P(11)=50%, P(01)=0%, P(10)=0%'
+      notebookCode: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(2)\n# Entangle qubit 0 and qubit 1 below\n\nqc.measure_all()\nprint("Bell state ready.")',
+      simulatedOutput: 'Bell state ready.\nMeasured correlations: P(00)=50%, P(11)=50%, P(01)=0%, P(10)=0%',
+      hint: 'To create entanglement, apply a Hadamard gate to qubit 0 (qc.h(0)) and a controlled-X gate from control qubit 0 to target qubit 1 (qc.cx(0, 1)).',
+      solution: 'from qiskit import QuantumCircuit\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)\nqc.measure_all()\nprint("Bell state ready.")',
+      checkCode: (code) => {
+        const c = code.replace(/\s+/g, '');
+        return c.includes('qc.h(0)') && c.includes('qc.cx(0,1)');
+      }
     },
     challenge: {
       prompt: 'Apply an H gate on Qubit A, and then apply a CNOT (CX) gate with Qubit A as the control and Qubit B as the target to entangle them.',
@@ -514,8 +547,14 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'from qiskit.circuit import Parameter\ntheta = Parameter("θ")\nqc = QuantumCircuit(1)\nqc.ry(theta, 0)\nprint(qc)',
-      simulatedOutput: '     ┌───────┐\nq_0: ┤ Ry(θ) ├\n     └───────┘'
+      notebookCode: 'from qiskit import QuantumCircuit\nimport numpy as np\nqc = QuantumCircuit(1)\n# Apply Ry rotation with angle Pi to qubit 0 below\n\nprint(qc)',
+      simulatedOutput: '     ┌──────────┐\nq_0: ┤ Ry(3.14) ├\n     └──────────┘',
+      hint: 'Apply an Ry rotation using qc.ry(np.pi, 0) or qc.ry(3.14, 0).',
+      solution: 'from qiskit import QuantumCircuit\nimport numpy as np\nqc = QuantumCircuit(1)\nqc.ry(np.pi, 0)\nprint(qc)',
+      checkCode: (code) => {
+        const c = code.replace(/\s+/g, '');
+        return c.includes('qc.ry(') && (c.includes('pi') || c.includes('3.14'));
+      }
     },
     challenge: {
       prompt: 'Adjust the rotation parameter $\\theta$ to exactly 3.14 radians (Pi) to flip the qubit state to |1⟩.',
@@ -741,8 +780,11 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: 'from qiskit.circuit.library import ZZFeatureMap\nfmap = ZZFeatureMap(feature_dimension=2, reps=2)\nprint(fmap.decompose())',
-      simulatedOutput: '     ┌───┐┌──────────┐                     \nq_0: ┤ H ├┤ P(2.0*x) ├──■──────────────────\n     ├───┤├──────────┤┌─┴─┐┌──────────────┐\nq_1: ┤ H ├┤ P(2.0*y) ├┤ X ├┤ P(2.0*x_y_z) ├\n     └───┘└──────────┘└───┘└──────────────┘'
+      notebookCode: 'from qiskit.circuit.library import ZZFeatureMap\n# Create a ZZFeatureMap with feature dimension 2 and reps 2 below\n\nprint(fmap.decompose())',
+      simulatedOutput: '     ┌───┐┌──────────┐                     \nq_0: ┤ H ├┤ P(2.0*x) ├──■──────────────────\n     ├───┤├──────────┤┌─┴─┐┌──────────────┐\nq_1: ┤ H ├┤ P(2.0*y) ├┤ X ├┤ P(2.0*x_y_z) ├\n     └───┘└──────────┘└───┘└──────────────┘',
+      hint: 'Type fmap = ZZFeatureMap(feature_dimension=2, reps=2) to declare the feature map.',
+      solution: 'from qiskit.circuit.library import ZZFeatureMap\nfmap = ZZFeatureMap(feature_dimension=2, reps=2)\nprint(fmap.decompose())',
+      checkCode: (code) => code.includes('ZZFeatureMap') && (code.includes('reps=2') || code.includes('reps = 2'))
     },
     challenge: {
       prompt: 'Select the "ZZFeatureMap" from the control panel to project the non-linear data into an entangled quantum space.',
@@ -923,8 +965,11 @@ export const lessonsData: Lesson[] = [
       ]
     },
     code: {
-      notebookCode: '# Final VQC Assembly\nfmap = ZZFeatureMap(2, reps=3)\nansatz = RealAmplitudes(2, reps=3)\nvqc = VQC(fmap, ansatz, optimizer=SPSA(maxiter=100))\nvqc.fit(X_space, y_space)\nprint(f"Final Accuracy: {vqc.score(X_space, y_space)*100:.2f}%")',
-      simulatedOutput: 'Final Accuracy: 94.20%\nMISSION ACCOMPLISHED: PATHWAY CLEAR'
+      notebookCode: '# Final VQC Assembly\n# Initialize VQC with ZZFeatureMap (reps=3) and SPSA (maxiter=100) below\n\nprint(f"Final Accuracy: {vqc.score(X_space, y_space)*100:.2f}%")',
+      simulatedOutput: 'Final Accuracy: 94.20%\nMISSION ACCOMPLISHED: PATHWAY CLEAR',
+      hint: 'Type vqc = VQC(fmap, ansatz, optimizer=SPSA(maxiter=100)) to compile the final hybrid classifier.',
+      solution: '# Final VQC Assembly\nfmap = ZZFeatureMap(2, reps=3)\nansatz = RealAmplitudes(2, reps=3)\nvqc = VQC(fmap, ansatz, optimizer=SPSA(maxiter=100))\nvqc.fit(X_space, y_space)\nprint(f"Final Accuracy: {vqc.score(X_space, y_space)*100:.2f}%")',
+      checkCode: (code) => code.includes('ZZFeatureMap') && code.includes('VQC') && (code.includes('maxiter=100') || code.includes('maxiter = 100'))
     },
     challenge: {
       prompt: 'Configure learning rate to 0.05, select ZZFeatureMap, and train the classifier until the classification accuracy reaches or exceeds 92%.',

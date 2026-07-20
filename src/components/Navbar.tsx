@@ -1,7 +1,7 @@
 import { Terminal, Book, Cpu, Orbit, Database, Info, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'motion/react';
 
-export type ViewType = 'home' | 'mission' | 'playground' | 'notebook' | 'resources' | 'about';
+export type ViewType = 'home' | 'mission' | 'playground' | 'notebook' | 'resources' | 'about' | 'graduation';
 
 interface NavbarProps {
   setView: (v: ViewType) => void;
@@ -13,7 +13,7 @@ interface NavbarProps {
 export function Navbar({ setView, introDone = true, mathLensActive, setMathLensActive }: NavbarProps) {
   const navItems = [
     { label: 'Home', icon: <Terminal size={13} />, action: () => setView('home') },
-    { label: 'Journey', icon: <Orbit size={13} />, action: () => setView('home') },
+    { label: 'Journey', icon: <Orbit size={13} />, action: () => setView('mission') },
     { label: 'Playground', icon: <Cpu size={13} />, action: () => setView('playground') },
     { label: 'Notebook Library', icon: <Database size={13} />, action: () => setView('notebook') },
     { label: 'Resources', icon: <Book size={13} />, action: () => setView('resources') },

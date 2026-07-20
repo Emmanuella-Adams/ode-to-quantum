@@ -49,7 +49,12 @@ export function Hero({ setView, introDone = true }: { setView: (v: ViewType) => 
               <ArrowRight size={13} />
             </button>
             
-            <button className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] border border-quantum-border bg-transparent text-quantum-text text-[12px] hover:bg-quantum-card transition-colors">
+            <button 
+              onClick={() => {
+                document.getElementById('curriculum-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] border border-quantum-border bg-transparent text-quantum-text text-[12px] hover:bg-quantum-card transition-colors"
+            >
               <BookOpen size={13} className="text-quantum-muted" />
               Explore Curriculum
             </button>

@@ -25,15 +25,37 @@ export function AboutView() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {['Mission Log Archive', 'Source Code Repository', 'Comms Channel'].map((item, i) => (
-            <div key={item} className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-colors rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted">
-              {i === 0 && <Info size={14} />}
-              {i === 1 && <Github size={14} />}
-              {i === 2 && <Mail size={14} />}
-              <span className="flex-grow">{item}</span>
-              <ExternalLink size={12} className="opacity-50" />
-            </div>
-          ))}
+          <button 
+            onClick={() => {
+              // Scroll to curriculum
+              document.getElementById('curriculum-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted text-left w-full"
+          >
+            <Info size={14} />
+            <span className="flex-grow">Mission Log Archive</span>
+            <ExternalLink size={12} className="opacity-50" />
+          </button>
+
+          <a 
+            href="https://github.com/Emmanuella-Adams/ode-to-quantum"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted"
+          >
+            <Github size={14} />
+            <span className="flex-grow">Source Code Repository</span>
+            <ExternalLink size={12} className="opacity-50" />
+          </a>
+
+          <a 
+            href="mailto:emmanuellaadams5@gmail.com"
+            className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted"
+          >
+            <Mail size={14} />
+            <span className="flex-grow">Comms Channel</span>
+            <ExternalLink size={12} className="opacity-50" />
+          </a>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Play, RotateCcw, ShieldAlert, Cpu, Sparkles, Sliders, Zap, Check, Orbit
 
 interface SimulatorProps {
   onStateChange: (state: any) => void;
+  activeLessonId?: string;
 }
 
 // ==========================================
@@ -999,15 +1000,30 @@ export function EntanglementExplorer({ onStateChange }: SimulatorProps) {
 // ==========================================
 // 11. VARIATIONAL & VQE OPTIMIZER
 // ==========================================
-export function VqeOptimizer({ onStateChange }: SimulatorProps) {
+export function VqeOptimizer({ onStateChange, activeLessonId }: SimulatorProps) {
   const [theta, setTheta] = useState(0.0);
   const [energy, setEnergy] = useState(1.0);
   const [gradientDescentActive, setGradientDescentActive] = useState(false);
 
   const calculateEnergy = (t: number) => {
-    // Energy curve landscape with global minimum around 2.45 radians
+    if (activeLessonId === 'l14') {
+      // VQE H2 molecule minimum energy
+      return Math.cos(t) + 0.45 * Math.sin(3 * t) - 1.5;
+    } else if (activeLessonId === 'l13') {
+      // QAOA partition minimum energy
+      return Math.cos(t) + 0.35 * Math.sin(3 * t) - 1.1;
+    }
+    // Optimization Landscapes (l12) minimum energy
     return Math.cos(t) + 0.2 * Math.sin(3 * t) - 0.8;
   };
+
+  useEffect(() => {
+    // Sync initial states
+    const initEnergy = calculateEnergy(0.0);
+    setTheta(0.0);
+    setEnergy(initEnergy);
+    onStateChange({ theta: 0.0, energy: initEnergy });
+  }, [activeLessonId]);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
@@ -1027,60 +1043,269 @@ export function VqeOptimizer({ onStateChange }: SimulatorProps) {
     const interval = setInterval(() => {
       if (Math.abs(currentTheta - target) < 0.06) {
         setTheta(target);
-        setEnergy(calculateEnergy(target));
+        const eng = calculateEnergy(target);
+        setEnergy(eng);
         setGradientDescentActive(false);
-        onStateChange({ theta: target, energy: calculateEnergy(target) });
+        onStateChange({ theta: target, energy: eng });
         clearInterval(interval);
       } else {
         const dir = currentTheta < target ? 1 : -1;
         currentTheta += dir * step;
         setTheta(currentTheta);
-        setEnergy(calculateEnergy(currentTheta));
+        const eng = calculateEnergy(currentTheta);
+        setEnergy(eng);
       }
     }, 60);
   };
 
-  // Convert theta to plot coordinate percentage
-  const pctX = (theta / 6.28) * 100;
-  // Convert energy to plot coordinate percentage (min -2.0 to max 1.0)
-  const pctY = ((energy + 2) / 3) * 100;
+  // Normalization boundaries for Y axis
+  let minY = -2.2;
+  let maxY = 0.6;
+  if (activeLessonId === 'l14') {
+    minY = -2.2;
+    maxY = 0.2;
+  }
 
+  const pctX = (theta / 6.28) * 100;
+  const pctY = ((energy - minY) / (maxY - minY)) * 100;
+
+  // Render sampling path
+  const samplePoints = () => {
+    const pointsList: string[] = [];
+    const steps = 60;
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * 6.28;
+      const eng = calculateEnergy(t);
+      const x = (i / steps) * 100;
+      const py = ((eng - minY) / (maxY - minY)) * 100;
+      pointsList.push(`${x},${100 - py}`);
+    }
+    return `M ${pointsList.join(' L ')}`;
+  };
+
+  const pathD = samplePoints();
+
+  // Render Lesson 11 (Variational Circuits) - Rotate Qubit State
+  if (activeLessonId === 'l11') {
+    const angleRad = theta;
+    const prob0 = Math.cos(angleRad / 2) ** 2;
+    const prob1 = Math.sin(angleRad / 2) ** 2;
+
+    return (
+      <div className="flex flex-col gap-6 p-6 border border-quantum-border bg-[#0D0F11] rounded-[14px] font-mono">
+        <div className="flex justify-between items-center border-b border-quantum-border/50 pb-3">
+          <h4 className="text-[11px] text-quantum-muted tracking-widest uppercase">Qubit State Vector Rotation</h4>
+          <span className="text-[10px] text-quantum-dim">Ry(θ) rotation</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          {/* Rotator Circle */}
+          <div className="flex justify-center py-4">
+            <div className="relative w-32 h-32 rounded-full border border-quantum-border flex items-center justify-center bg-[#070809]">
+              <div className="absolute top-1 text-[9px] text-quantum-dim">|0⟩</div>
+              <div className="absolute bottom-1 text-[9px] text-quantum-dim">|1⟩</div>
+              
+              {/* Rotating Arrow */}
+              <motion.div 
+                className="w-0.5 h-14 bg-quantum-blue origin-bottom absolute bottom-16"
+                style={{ rotate: `${(theta / Math.PI) * 180}deg` }}
+              />
+              <div className="w-2 h-2 rounded-full bg-quantum-blue absolute" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="p-3 border border-quantum-border rounded bg-quantum-bg text-[11px] space-y-1">
+              <span className="text-quantum-dim block uppercase text-[9px] tracking-wider">Statevector Amplitudes</span>
+              <div>|ψ⟩ = {Math.cos(theta/2).toFixed(2)}|0⟩ + {Math.sin(theta/2).toFixed(2)}|1⟩</div>
+              <div className="flex justify-between text-[10px] text-quantum-dim pt-1.5">
+                <span>P(0) = {(prob0*100).toFixed(0)}%</span>
+                <span>P(1) = {(prob1*100).toFixed(0)}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between text-[11px] text-quantum-dim">
+            <span>Rotation Angle (θ)</span>
+            <span className="text-quantum-text font-bold">{theta.toFixed(2)} rad ({((theta/Math.PI)*180).toFixed(0)}°)</span>
+          </div>
+          <input 
+            type="range"
+            min="0.0"
+            max="6.28"
+            step="0.02"
+            value={theta}
+            onChange={handleSliderChange}
+            className="w-full accent-quantum-blue bg-quantum-bg h-1 rounded-lg cursor-pointer"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Render Lesson 13 (QAOA Max-Cut)
+  if (activeLessonId === 'l13') {
+    // Determine colors of the 4 nodes based on theta:
+    // We toggle node values to simulate partition changes:
+    const nodeA = theta > 1.2 && theta < 4.0;
+    const nodeB = theta > 2.0 && theta < 5.0;
+    const nodeC = !nodeA;
+    const nodeD = !nodeB;
+
+    const cuts = (nodeA !== nodeB ? 1 : 0) + (nodeB !== nodeC ? 1 : 0) + (nodeC !== nodeD ? 1 : 0) + (nodeD !== nodeA ? 1 : 0);
+
+    return (
+      <div className="flex flex-col gap-6 p-6 border border-quantum-border bg-[#0D0F11] rounded-[14px] font-mono">
+        <div className="flex justify-between items-center border-b border-quantum-border/50 pb-3">
+          <h4 className="text-[11px] text-quantum-muted tracking-widest uppercase">QAOA Max-Cut Partitions</h4>
+          <span className="text-[10px] text-quantum-dim">Active Cuts: {cuts} / 4</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          {/* Graph visualizer */}
+          <div className="flex justify-center py-4">
+            <div className="relative w-36 h-36 border border-quantum-border/30 rounded-lg bg-[#070809] flex items-center justify-center">
+              {/* Ring links */}
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                <line x1="25" y1="25" x2="75" y2="25" stroke={nodeA !== nodeB ? "var(--color-quantum-blue)" : "rgba(255,255,255,0.06)"} strokeWidth={nodeA !== nodeB ? "2" : "1"} />
+                <line x1="75" y1="25" x2="75" y2="75" stroke={nodeB !== nodeC ? "var(--color-quantum-blue)" : "rgba(255,255,255,0.06)"} strokeWidth={nodeB !== nodeC ? "2" : "1"} />
+                <line x1="75" y1="75" x2="25" y2="75" stroke={nodeC !== nodeD ? "var(--color-quantum-blue)" : "rgba(255,255,255,0.06)"} strokeWidth={nodeC !== nodeD ? "2" : "1"} />
+                <line x1="25" y1="75" x2="25" y2="25" stroke={nodeD !== nodeA ? "var(--color-quantum-blue)" : "rgba(255,255,255,0.06)"} strokeWidth={nodeD !== nodeA ? "2" : "1"} />
+              </svg>
+
+              {/* Nodes */}
+              <div className={`absolute top-4 left-4 w-6 h-6 rounded-full border flex items-center justify-center font-bold text-[10px] transition-colors ${nodeA ? 'bg-quantum-blue text-quantum-bg border-quantum-blue' : 'bg-quantum-green text-quantum-bg border-quantum-green'}`}>A</div>
+              <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center font-bold text-[10px] transition-colors ${nodeB ? 'bg-quantum-blue text-quantum-bg border-quantum-blue' : 'bg-quantum-green text-quantum-bg border-quantum-green'}`}>B</div>
+              <div className={`absolute bottom-4 right-4 w-6 h-6 rounded-full border flex items-center justify-center font-bold text-[10px] transition-colors ${nodeC ? 'bg-quantum-blue text-quantum-bg border-quantum-blue' : 'bg-quantum-green text-quantum-bg border-quantum-green'}`}>C</div>
+              <div className={`absolute bottom-4 left-4 w-6 h-6 rounded-full border flex items-center justify-center font-bold text-[10px] transition-colors ${nodeD ? 'bg-quantum-blue text-quantum-bg border-quantum-blue' : 'bg-quantum-green text-quantum-bg border-quantum-green'}`}>D</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="p-3 border border-quantum-border rounded bg-quantum-bg text-[11px] space-y-1">
+              <span className="text-quantum-dim block uppercase text-[9px] tracking-wider">Partition State</span>
+              <div>Cluster Blue: {[nodeA && 'A', nodeB && 'B', nodeC && 'C', nodeD && 'D'].filter(Boolean).join(', ') || 'None'}</div>
+              <div>Cluster Green: {[!nodeA && 'A', !nodeB && 'B', !nodeC && 'C', !nodeD && 'D'].filter(Boolean).join(', ') || 'None'}</div>
+            </div>
+            <div className="p-3 border border-quantum-border rounded bg-quantum-bg text-[11px] flex justify-between">
+              <span className="text-quantum-dim">APPROX RATIO:</span>
+              <span className="font-bold text-quantum-blue">{Math.max(40, Math.min(98, ((cuts) / 4) * 100)).toFixed(0)}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between text-[11px] text-quantum-dim">
+            <span>QAOA Phase Angle (θ)</span>
+            <span className="text-quantum-text font-bold">{theta.toFixed(2)} rad</span>
+          </div>
+          <input 
+            type="range"
+            min="0.0"
+            max="6.28"
+            step="0.02"
+            value={theta}
+            onChange={handleSliderChange}
+            className="w-full accent-quantum-blue bg-quantum-bg h-1 rounded-lg cursor-pointer"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Render Lesson 14 (VQE Hydrogen molecule)
+  if (activeLessonId === 'l14') {
+    const distance = 0.3 + (theta / 6.28) * 1.5; // distance from 0.3 to 1.8 Angstroms
+
+    return (
+      <div className="flex flex-col gap-6 p-6 border border-quantum-border bg-[#0D0F11] rounded-[14px] font-mono">
+        <div className="flex justify-between items-center border-b border-quantum-border/50 pb-3">
+          <h4 className="text-[11px] text-quantum-muted tracking-widest uppercase">H2 Molecular Distance Optimizer</h4>
+          <span className="text-[10px] text-quantum-dim">Distance: {distance.toFixed(3)} Å</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          {/* Atomic visualization */}
+          <div className="flex justify-center py-4">
+            <div className="relative w-36 h-36 border border-quantum-border/30 rounded-lg bg-[#070809] flex items-center justify-center overflow-hidden">
+              {/* Bonding orbital electron cloud */}
+              <div 
+                className="absolute rounded-full bg-quantum-blue/10 border border-quantum-blue/20 blur-sm transition-all duration-300"
+                style={{ 
+                  width: `${60 + (1.2 - Math.abs(distance - 0.74)) * 30}px`,
+                  height: '40px'
+                }}
+              />
+
+              {/* Two protons */}
+              <div className="flex items-center gap-1.5 absolute" style={{ gap: `${distance * 35}px` }}>
+                <div className="w-5 h-5 rounded-full bg-quantum-blue flex items-center justify-center font-bold text-[9px] text-quantum-bg shadow-[0_0_8px_var(--color-quantum-blue)]">H</div>
+                <div className="w-5 h-5 rounded-full bg-quantum-blue flex items-center justify-center font-bold text-[9px] text-quantum-bg shadow-[0_0_8px_var(--color-quantum-blue)]">H</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="p-3 border border-quantum-border rounded bg-quantum-bg text-[11px] space-y-1">
+              <span className="text-quantum-dim block uppercase text-[9px] tracking-wider">Molecular Energy</span>
+              <div className="text-quantum-green font-bold text-base">{energy.toFixed(3)} Hartree</div>
+              <div className="text-[9px] text-quantum-dim">Ground state energy: -1.86 Hartree (d=0.74Å)</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between text-[11px] text-quantum-dim">
+            <span>Interatomic Distance Parameter</span>
+            <span className="text-quantum-text font-bold">{theta.toFixed(2)} rad</span>
+          </div>
+          <input 
+            type="range"
+            min="0.0"
+            max="6.28"
+            step="0.02"
+            value={theta}
+            onChange={handleSliderChange}
+            className="w-full accent-quantum-blue bg-quantum-bg h-1 rounded-lg cursor-pointer"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Default: Lesson 12 (Optimization Landscapes)
   return (
-    <div className="flex flex-col gap-6 p-6 border border-quantum-border bg-[#0D0F11] rounded-[14px]">
+    <div className="flex flex-col gap-6 p-6 border border-quantum-border bg-[#0D0F11] rounded-[14px] font-mono">
       <div className="flex justify-between items-center border-b border-quantum-border/50 pb-3">
         <h4 className="text-[11px] text-quantum-muted tracking-widest uppercase">Variational Energy Landscape</h4>
         <button 
           onClick={runGradientDescent}
           disabled={gradientDescentActive}
-          className="flex items-center gap-1.5 px-3 py-1 rounded bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue text-[10px] hover:bg-quantum-blue/20 transition-colors disabled:opacity-40"
+          className="flex items-center gap-1.5 px-3 py-1 rounded bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue text-[10px] hover:bg-quantum-blue/20 transition-colors disabled:opacity-40 cursor-pointer font-semibold"
         >
           <Sliders size={11} /> Auto-Optimize (GD)
         </button>
       </div>
 
       <div className="h-36 border border-quantum-border/40 rounded-lg relative overflow-hidden bg-[#070809] flex items-end">
-        {/* Draw abstract energy curve landscape background */}
+        {/* Draw dynamic energy curve landscape background */}
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <path 
-            d="M 0,80 Q 25,10 50,75 T 100,50" 
-            fill="none" 
-            stroke="rgba(255,255,255,0.06)" 
-            strokeWidth="1.5" 
-          />
-          <path 
-            d="M 0,66 C 15,30 25,20 40,85 C 55,100 70,10 100,55" 
+            d={pathD} 
             fill="none" 
             stroke="var(--color-quantum-blue)" 
             strokeWidth="1.5" 
-            className="opacity-50"
+            className="opacity-75"
           />
         </svg>
 
         {/* Current State Indicator dot */}
         <motion.div
           animate={{ x: `${pctX}%`, y: `${100 - pctY}%` }}
-          transition={{ duration: 0.1 }}
-          className="absolute w-3 h-3 rounded-full bg-quantum-green border border-[#0D0F11] shadow-[0_0_10px_var(--color-quantum-green)] -ml-1.5 -mt-1.5"
+          transition={{ duration: 0.05 }}
+          className="absolute w-3 h-3 rounded-full bg-quantum-green border border-[#0D0F11] shadow-[0_0_10px_var(--color-quantum-green)] -ml-1.5 -mt-1.5 z-10"
         />
         <div className="absolute bottom-2 left-3 font-mono text-[9px] text-quantum-dim">
           θ = 0.0 rad
@@ -1115,12 +1340,13 @@ export function VqeOptimizer({ onStateChange }: SimulatorProps) {
           </div>
           <div className="p-3 border border-quantum-border rounded bg-[#0A0B0D] flex flex-col">
             <span className="text-[10px] text-quantum-dim">LANDSCAPE MINIMUM</span>
-            <span className="text-lg font-bold text-quantum-dim">-1.964 Hartree</span>
+            <span className="text-lg font-bold text-quantum-dim">{(activeLessonId === 'l14' ? -1.920 : activeLessonId === 'l13' ? -1.450 : -1.394).toFixed(3)} Hartree</span>
           </div>
         </div>
       </div>
     </div>
   );
+}
 }
 
 // ==========================================

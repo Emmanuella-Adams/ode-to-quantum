@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, BookOpen, Target, Lightbulb, Beaker, Terminal, CheckCircle2, ChevronRight, Eye, ShieldAlert, Sparkles, BookCheck } from 'lucide-react';
+import { ArrowLeft, BookOpen, Target, Lightbulb, Beaker, Terminal, CheckCircle2, ChevronRight, Eye, ShieldAlert, Sparkles, BookCheck, Download, Copy } from 'lucide-react';
 import { lessonsData, Lesson } from '../data/lessonsData';
 import { CodeBlock } from './CodeBlock';
+import { MathRenderer } from './MathRenderer';
 import { 
   WelcomeSimulator, 
   BitSimulator, 
@@ -25,6 +26,7 @@ interface MissionViewProps {
   setCompletedLessons: React.Dispatch<React.SetStateAction<string[]>>;
   mathLensActive: boolean;
   onBack: () => void;
+  onGraduate?: () => void;
 }
 
 export function MissionView({ 
@@ -33,7 +35,8 @@ export function MissionView({
   completedLessons, 
   setCompletedLessons, 
   mathLensActive, 
-  onBack 
+  onBack,
+  onGraduate
 }: MissionViewProps) {
   const lessonIndex = lessonsData.findIndex(l => l.id === activeLessonId);
   const lesson = lessonsData[lessonIndex] || lessonsData[0];
@@ -45,6 +48,12 @@ export function MissionView({
   const [notebookRan, setNotebookRan] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [showExplanation, setShowExplanation] = useState<Record<number, boolean>>({});
+  
+  const [codeText, setCodeText] = useState('');
+  const [showHint, setShowHint] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
+  const [executionOutput, setExecutionOutput] = useState('');
+  const [executionError, setExecutionError] = useState(false);
 
   // Reset states when changing lesson
   useEffect(() => {
@@ -54,6 +63,12 @@ export function MissionView({
     setNotebookRan(false);
     setSelectedAnswers({});
     setShowExplanation({});
+    
+    setCodeText(lesson.code.notebookCode || '');
+    setShowHint(false);
+    setShowSolution(false);
+    setExecutionOutput('');
+    setExecutionError(false);
   }, [activeLessonId]);
 
   // Check challenge verification on widget state change
@@ -65,9 +80,29 @@ export function MissionView({
 
   const handleRunNotebook = () => {
     setNotebookRunning(true);
+    setNotebookRan(false);
+    
     setTimeout(() => {
       setNotebookRunning(false);
       setNotebookRan(true);
+      
+      const checkCode = lesson.code.checkCode;
+      if (checkCode) {
+        const passed = checkCode(codeText);
+        if (passed) {
+          setChallengeSuccess(true);
+          setExecutionError(false);
+          setExecutionOutput(lesson.code.simulatedOutput);
+        } else {
+          setExecutionError(true);
+          setExecutionOutput("Qiskit Verification Error:\n--------------------------\nYour Qiskit code does not meet the mission specifications.\nMake sure you have implemented all requested quantum gates (e.g. qc.h(0), qc.cx(0,1)) or parameters.\n\nClick 'Get Hint' or 'Show Solution' if you get stuck.");
+        }
+      } else {
+        // Fallback for welcoming/informational code
+        setChallengeSuccess(true);
+        setExecutionError(false);
+        setExecutionOutput(lesson.code.simulatedOutput);
+      }
     }, 1200);
   };
 
@@ -86,8 +121,10 @@ export function MissionView({
     markComplete();
     if (lessonIndex < lessonsData.length - 1) {
       setActiveLessonId(lessonsData[lessonIndex + 1].id);
+    } else if (onGraduate) {
+      onGraduate();
     } else {
-      onBack(); // back to dashboard after final mission
+      onBack();
     }
   };
 
@@ -121,7 +158,7 @@ export function MissionView({
       case 'entanglement':
         return <EntanglementExplorer onStateChange={setWidgetState} />;
       case 'vqe':
-        return <VqeOptimizer onStateChange={setWidgetState} />;
+        return <VqeOptimizer onStateChange={setWidgetState} activeLessonId={activeLessonId} />;
       case 'qml':
         return <QmlDecisionBoundary onStateChange={setWidgetState} />;
       default:
@@ -219,7 +256,7 @@ export function MissionView({
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[11px] font-bold text-quantum-text tracking-wide uppercase">Cadet Challenge Task</span>
-                  <p className="text-[12px] text-quantum-muted leading-normal">{lesson.challenge.prompt}</p>
+                  <p className="text-[12px] text-quantum-muted leading-normal"><MathRenderer text={lesson.challenge.prompt} /></p>
                 </div>
               </div>
               
@@ -260,20 +297,20 @@ export function MissionView({
                 {lesson.mathLens.dirac && (
                   <div className="flex items-center gap-3 border-b border-quantum-border/40 pb-2">
                     <span className="text-quantum-dim text-[10px] uppercase">Dirac Notation:</span>
-                    <span className="text-quantum-blue font-bold text-[13px]">{lesson.mathLens.dirac}</span>
+                    <span className="text-quantum-blue font-bold text-[13px]"><MathRenderer text={lesson.mathLens.dirac} /></span>
                   </div>
                 )}
                 {lesson.mathLens.matrix && (
                   <div className="flex items-center gap-3 border-b border-quantum-border/40 pb-2">
                     <span className="text-quantum-dim text-[10px] uppercase">Matrix representation:</span>
-                    <span className="text-quantum-green font-bold text-[13px]">{lesson.mathLens.matrix}</span>
+                    <span className="text-quantum-green font-bold text-[13px]"><MathRenderer text={lesson.mathLens.matrix} /></span>
                   </div>
                 )}
                 <div className="flex flex-col gap-2">
                   <span className="text-quantum-dim text-[10px] uppercase block mb-1">Key Equations:</span>
                   {lesson.mathLens.equations.map((eq, i) => (
                     <div key={i} className="bg-quantum-card/40 border border-quantum-border p-2 rounded text-quantum-text">
-                      {eq}
+                      <MathRenderer text={eq} />
                     </div>
                   ))}
                 </div>
@@ -294,20 +331,121 @@ export function MissionView({
             </h2>
 
             <div className="border border-quantum-border rounded-[14px] overflow-hidden bg-[#0A0B0D]">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-quantum-border/60 bg-quantum-card/60">
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-quantum-border/60 bg-quantum-card/60">
                 <span className="text-[10px] text-quantum-dim font-mono tracking-wider">JUPYTER NOTEBOOK CELL [1]</span>
-                <button
-                  onClick={handleRunNotebook}
-                  disabled={notebookRunning}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue text-[10px] hover:bg-quantum-blue/20 transition-all font-semibold"
-                >
-                  {notebookRunning ? 'Running...' : 'Run Cell'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const blob = new Blob([codeText], { type: 'text/plain' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `mission_${lesson.id}_qiskit.py`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="p-1.5 rounded bg-quantum-bg hover:bg-quantum-border text-quantum-muted hover:text-quantum-text transition-colors cursor-pointer"
+                    title="Download Code"
+                  >
+                    <Download size={13} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(codeText);
+                      alert("Code copied to clipboard!");
+                    }}
+                    className="p-1.5 rounded bg-quantum-bg hover:bg-quantum-border text-quantum-muted hover:text-quantum-text transition-colors cursor-pointer"
+                    title="Copy Code"
+                  >
+                    <Copy size={13} />
+                  </button>
+                  <div className="w-px h-4 bg-quantum-border mx-1" />
+                  <button
+                    onClick={handleRunNotebook}
+                    disabled={notebookRunning}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue text-[10px] hover:bg-quantum-blue/20 transition-all font-semibold cursor-pointer"
+                  >
+                    {notebookRunning ? 'Running...' : 'Run Cell'}
+                  </button>
+                </div>
               </div>
 
               <div className="p-4">
-                <CodeBlock code={lesson.code.notebookCode} language="python" />
+                <textarea
+                  value={codeText}
+                  onChange={(e) => setCodeText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Tab') {
+                      e.preventDefault();
+                      const start = e.currentTarget.selectionStart;
+                      const end = e.currentTarget.selectionEnd;
+                      const val = e.currentTarget.value;
+                      const newVal = val.substring(0, start) + '    ' + val.substring(end);
+                      setCodeText(newVal);
+                      setTimeout(() => {
+                        e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 4;
+                      }, 0);
+                    }
+                  }}
+                  className="w-full h-44 bg-[#070809] border border-quantum-border/50 text-quantum-green font-mono text-[12px] p-4 rounded-lg focus:outline-none focus:border-quantum-blue/50 focus:ring-1 focus:ring-quantum-blue/20 leading-relaxed resize-y"
+                  placeholder="# Write your Qiskit code here..."
+                />
               </div>
+
+              {/* Hints & Answers Section */}
+              {(lesson.code.hint || lesson.code.solution) && (
+                <div className="flex items-center gap-4 px-4 py-2 border-t border-quantum-border/40 bg-quantum-card/25 text-[11px] font-mono">
+                  {lesson.code.hint && (
+                    <button
+                      onClick={() => setShowHint(!showHint)}
+                      className="text-quantum-blue hover:text-quantum-blue/80 transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                    >
+                      {showHint ? 'Hide Hint' : 'Get Hint'}
+                    </button>
+                  )}
+                  {lesson.code.solution && (
+                    <button
+                      onClick={() => setShowSolution(!showSolution)}
+                      className="text-quantum-dim hover:text-quantum-text transition-colors font-medium flex items-center gap-1 cursor-pointer"
+                    >
+                      {showSolution ? 'Hide Answer' : 'Show Answer'}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {showHint && lesson.code.hint && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="p-3.5 bg-quantum-blue/5 border-t border-quantum-blue/10 text-quantum-blue text-[11px] leading-relaxed flex gap-2 font-mono"
+                >
+                  <Lightbulb size={13} className="shrink-0 mt-0.5" />
+                  <span><strong>Hint:</strong> {lesson.code.hint}</span>
+                </motion.div>
+              )}
+
+              {showSolution && lesson.code.solution && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="p-3.5 bg-quantum-dim/5 border-t border-quantum-border/20 text-quantum-muted text-[11px] leading-relaxed font-mono"
+                >
+                  <span className="font-bold text-quantum-text uppercase block mb-1.5 text-[9px] tracking-wider">Correct Code Solution:</span>
+                  <pre className="bg-[#050607] border border-quantum-border p-2.5 rounded font-mono text-[11px] text-quantum-text overflow-x-auto select-all leading-normal whitespace-pre">
+                    {lesson.code.solution}
+                  </pre>
+                  <button
+                    onClick={() => {
+                      setCodeText(lesson.code.solution || '');
+                      setShowSolution(false);
+                    }}
+                    className="mt-2 text-[10px] px-2.5 py-1 bg-quantum-blue/10 border border-quantum-blue/30 text-quantum-blue rounded hover:bg-quantum-blue/20 transition-all font-semibold cursor-pointer"
+                  >
+                    Paste Solution Into Editor
+                  </button>
+                </motion.div>
+              )}
 
               {(notebookRunning || notebookRan) && (
                 <div className="border-t border-quantum-border p-4 bg-[#050607] font-mono text-[11px]">
@@ -315,7 +453,9 @@ export function MissionView({
                   {notebookRunning ? (
                     <span className="text-quantum-blue animate-pulse">Processing quantum matrix states...</span>
                   ) : (
-                    <pre className="text-quantum-green whitespace-pre-wrap leading-relaxed">{lesson.code.simulatedOutput}</pre>
+                    <pre className={`whitespace-pre-wrap leading-relaxed ${executionError ? 'text-red-400' : 'text-quantum-green'}`}>
+                      {executionOutput}
+                    </pre>
                   )}
                 </div>
               )}
