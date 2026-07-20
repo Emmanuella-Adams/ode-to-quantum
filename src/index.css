@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-quantum-bg: #111315;
+  --color-quantum-card: #1D2024;
+  --color-quantum-card-hover: #20242A;
+  --color-quantum-blue: #5CB8FF;
+  --color-quantum-green: #48D597;
+  --color-quantum-text: #ECECEC;
+  --color-quantum-muted: #A7ADB5;
+  --color-quantum-dim: #7E848C;
+  --color-quantum-border: rgba(255, 255, 255, 0.06);
+  --color-quantum-border-hover: rgba(255, 255, 255, 0.12);
+  
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  background-color: var(--color-quantum-bg);
+  color: var(--color-quantum-text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-quantum-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-quantum-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-quantum-dim);
+}
