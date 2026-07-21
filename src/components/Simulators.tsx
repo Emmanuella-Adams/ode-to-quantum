@@ -1347,7 +1347,7 @@ export function VqeOptimizer({ onStateChange, activeLessonId }: SimulatorProps) 
     </div>
   );
 }
-}
+
 
 // ==========================================
 // 12. QUANTUM MACHINE LEARNING SIMULATOR
