@@ -15,7 +15,7 @@ export function Navbar({ setView, introDone = true, mathLensActive, setMathLensA
     { label: 'Home', icon: <Terminal size={13} />, action: () => setView('home') },
     { label: 'Journey', icon: <Orbit size={13} />, action: () => setView('mission') },
     { label: 'Playground', icon: <Cpu size={13} />, action: () => setView('playground') },
-    { label: 'Notebook Library', icon: <Database size={13} />, action: () => setView('notebook') },
+    { label: 'Quantum Labs', icon: <Database size={13} />, action: () => setView('notebook') },
     { label: 'Resources', icon: <Book size={13} />, action: () => setView('resources') },
     { label: 'About', icon: <Info size={13} />, action: () => setView('about') },
   ];

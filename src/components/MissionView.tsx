@@ -221,7 +221,7 @@ export function MissionView({
             </h2>
             <div className="p-5 border border-quantum-border/80 bg-quantum-card/30 rounded-[14px] leading-relaxed text-[12px] italic text-quantum-text/90 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-1 h-full bg-quantum-blue" />
-              {lesson.story}
+              <MathRenderer text={lesson.story} />
             </div>
           </section>
 
@@ -233,7 +233,7 @@ export function MissionView({
             </h2>
             <div className="text-[13px] text-quantum-muted space-y-4 leading-relaxed">
               {lesson.intuition.map((para, i) => (
-                <p key={i}>{para}</p>
+                <p key={i}><MathRenderer text={para} /></p>
               ))}
             </div>
           </section>
@@ -477,7 +477,7 @@ export function MissionView({
                 return (
                   <div key={qIdx} className="p-5 border border-quantum-border bg-quantum-card/20 rounded-[14px] flex flex-col gap-4">
                     <span className="text-[12px] text-quantum-text font-medium leading-relaxed">
-                      Question {qIdx + 1}: {q.question}
+                      Question {qIdx + 1}: <MathRenderer text={q.question} />
                     </span>
                     <div className="flex flex-col gap-2">
                       {q.options.map((opt, optIdx) => {
@@ -499,7 +499,7 @@ export function MissionView({
                             onClick={() => !isChecked && handleAnswerSelect(qIdx, optIdx)}
                             className={`p-3 text-left rounded-lg border text-[12px] transition-all font-mono ${btnStyle}`}
                           >
-                            {opt}
+                            <MathRenderer text={opt} />
                           </button>
                         );
                       })}
@@ -516,7 +516,7 @@ export function MissionView({
                           <span className="font-bold block uppercase tracking-wider text-[9px]">
                             {selected === q.answerIndex ? 'Correct Answer' : 'Review Explanation'}
                           </span>
-                          <p className="text-quantum-text/90">{q.explanation}</p>
+                          <p className="text-quantum-text/90"><MathRenderer text={q.explanation} /></p>
                         </div>
                       </motion.div>
                     )}
@@ -534,7 +534,7 @@ export function MissionView({
             </h2>
             <ul className="space-y-2.5 text-[12px] text-quantum-muted pl-4 list-disc marker:text-quantum-blue">
               {lesson.summary.map((point, i) => (
-                <li key={i} className="leading-relaxed">{point}</li>
+                <li key={i} className="leading-relaxed"><MathRenderer text={point} /></li>
               ))}
             </ul>
           </section>
@@ -569,7 +569,7 @@ export function MissionView({
                   <span className="text-quantum-dim mt-0.5 text-[9px] font-mono tracking-widest">
                     {(idx + 1).toString().padStart(2, '0')}
                   </span>
-                  <span className="line-clamp-2">{item.replace(/\.$/, '')}</span>
+                  <span className="line-clamp-2"><MathRenderer text={item.replace(/\.$/, '')} /></span>
                 </li>
               ))}
             </ul>

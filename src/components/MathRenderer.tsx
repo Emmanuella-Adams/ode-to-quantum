@@ -9,6 +9,7 @@ export function formatMathString(str: string): string {
   s = s.replace(/\\gamma/g, 'γ');
   s = s.replace(/\\delta/g, 'δ');
   s = s.replace(/\\phi/g, 'φ');
+  s = s.replace(/\\arg\\min_\\theta/g, 'argmin_θ');
   s = s.replace(/\\theta/g, 'θ');
   s = s.replace(/\\psi/g, 'ψ');
   s = s.replace(/\\Psi/g, 'Ψ');
@@ -33,7 +34,6 @@ export function formatMathString(str: string): string {
   s = s.replace(/\\partial/g, '∂');
   s = s.replace(/\\to/g, '→');
   s = s.replace(/\\times/g, '×');
-  s = s.replace(/\\arg\\min_\\theta/g, 'argmin_θ');
   s = s.replace(/\\in/g, '∈');
   s = s.replace(/\\{/g, '{');
   s = s.replace(/\\}/g, '}');

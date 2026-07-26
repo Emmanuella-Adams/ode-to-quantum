@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { ArrowRight, BookOpen, Database } from 'lucide-react';
 import { BlochSphere } from './BlochSphere';
 import { ViewType } from './Navbar';
 
@@ -40,7 +40,7 @@ export function Hero({ setView, introDone = true }: { setView: (v: ViewType) => 
             An Interactive Journey from Classical Computing to Quantum Machine Learning. Step onto the research vessel and explore the fundamentals of quantum mechanics through code and experimentation.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <button 
               onClick={() => setView('mission')}
               className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] bg-quantum-text text-quantum-bg text-[12px] font-medium hover:bg-white transition-colors"
@@ -57,6 +57,14 @@ export function Hero({ setView, introDone = true }: { setView: (v: ViewType) => 
             >
               <BookOpen size={13} className="text-quantum-muted" />
               Explore Curriculum
+            </button>
+
+            <button 
+              onClick={() => setView('notebook')}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] border border-quantum-border bg-transparent text-quantum-text text-[12px] hover:bg-quantum-card transition-colors animate-none"
+            >
+              <Database size={13} className="text-quantum-muted" />
+              Quantum Labs
             </button>
           </div>
         </motion.div>

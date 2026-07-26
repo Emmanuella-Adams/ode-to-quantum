@@ -1,7 +1,12 @@
 import { motion } from 'motion/react';
 import { Info, Mail, Github, ExternalLink } from 'lucide-react';
+import { ViewType } from './Navbar';
 
-export function AboutView() {
+interface AboutViewProps {
+  setView: (v: ViewType) => void;
+}
+
+export function AboutView({ setView }: AboutViewProps) {
   return (
     <div className="flex flex-col gap-8 max-w-3xl mx-auto w-full pt-4 pb-20">
       <div className="border-b border-quantum-border pb-4">
@@ -27,10 +32,12 @@ export function AboutView() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button 
             onClick={() => {
-              // Scroll to curriculum
-              document.getElementById('curriculum-section')?.scrollIntoView({ behavior: 'smooth' });
+              setView('home');
+              setTimeout(() => {
+                document.getElementById('curriculum-section')?.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
             }}
-            className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted text-left w-full"
+            className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted text-left w-full animate-none"
           >
             <Info size={14} />
             <span className="flex-grow">Mission Log Archive</span>
@@ -49,7 +56,7 @@ export function AboutView() {
           </a>
 
           <a 
-            href="mailto:emmanuellaadams5@gmail.com"
+            href="mailto:emmanuella0adams@gmail.com"
             className="p-4 border border-quantum-border bg-quantum-card hover:bg-quantum-border hover:text-quantum-text transition-all duration-300 rounded-[12px] flex items-center gap-3 cursor-pointer text-[12px] text-quantum-muted"
           >
             <Mail size={14} />

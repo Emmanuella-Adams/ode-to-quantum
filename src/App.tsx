@@ -159,7 +159,7 @@ export default function App() {
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
               >
-                <AboutView />
+                <AboutView setView={setView} />
               </motion.div>
             )}
             {view === 'graduation' && (
