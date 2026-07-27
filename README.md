@@ -15,7 +15,7 @@ Ode to Quantum assumes no prior knowledge of quantum physics, guiding explorers 
 
 Watch our project walkthrough, pedagogical overview, and feature demonstration on YouTube:
 
-👉 **[Ode to Quantum - Video Demonstration (YouTube)](https://youtu.be/D_fZnNW7n4c)**
+[![Ode to Quantum - Video Demonstration](https://youtube.com)](https://youtu.be/D_fZnNW7n4c)
 
 ---
 
