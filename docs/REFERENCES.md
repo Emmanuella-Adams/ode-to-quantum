@@ -25,7 +25,7 @@ This document provides formal citations, library licensing details, and generati
     *   *Role in Project:* Inspired the pedagogical transition from matrix grids to visual geometric transformations (such as projecting vectors and coordinate transformations).
     *   *Access Link:* [Essence of Linear Algebra on YouTube](https://youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 *   **Kherb, J. (2021).** *Bloch Sphere Visual Simulator.*
-    *   *Role in Project:* Provided inspiration for constructing our custom interactive 3D qubit vector rotation tool on a canvas.
+    *   *Role in Project:* Provided inspiration for constructing my custom interactive 3D qubit vector rotation tool on a canvas.
     *   *Access Link:* [Bloch Sphere Tool by Kherb](https://bloch.kherb.io/)
 
 ---
@@ -59,7 +59,7 @@ Ode to Quantum relies on the following open-source frameworks and libraries:
 
 ## 🤖 Generative AI Disclosure
 
-In accordance with the **WISER Education Challenge AI Use Policy**, the development team declares the following uses of AI coding assistants during this project:
+In accordance with the **WISER Education Challenge AI Use Policy**, I (Emmanuella Adams) declare the following uses of AI coding assistants during this project:
 
 ### 1. Tools Utilized
 *   **Google Gemini** (accessed via the Antigravity IDE pair programming workspace).
@@ -70,4 +70,4 @@ In accordance with the **WISER Education Challenge AI Use Policy**, the developm
 *   **Refactoring & Boilerplate Generation:** Generated base React TypeScript interface typings and verified matching case conditions inside the AST simulator command parser.
 
 ### 3. Verification & Accountability
-All code, mathematical logic, and simulations generated with AI assistance were strictly reviewed, manually tested, and verified for mathematical accuracy by the human team members. No code was deployed without validating state vector calculation traces, making the human authors 100% accountable for all calculations and logic.
+All code, mathematical logic, and simulations generated with AI assistance were strictly reviewed, manually tested, and verified for mathematical accuracy by me. No code was deployed without validating state vector calculation traces, making me (Emmanuella Adams) 100% accountable for all calculations and logic.

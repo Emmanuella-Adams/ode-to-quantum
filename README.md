@@ -13,7 +13,7 @@ Ode to Quantum assumes no prior knowledge of quantum physics, guiding explorers 
 
 ## 📺 Demonstration Video
 
-Watch our project walkthrough, pedagogical overview, and feature demonstration on YouTube:
+Watch the project walkthrough, pedagogical overview, and feature demonstration on YouTube:
 
 👉 **[Ode to Quantum - Video Demonstration (YouTube)](https://youtu.be/D_fZnNW7n4c)**
 
@@ -195,7 +195,7 @@ Follow these steps to run the platform on your local machine:
 Ode to Quantum is built to scale into a larger educational framework:
 
 1.  **Real Quantum Hardware Execution**:
-    We plan to integrate the [IBM Quantum API](https://quantum.ibm.com/). This will allow learners to toggle a switch inside the Qiskit Sandbox and submit their circuits to run on physical superconducting quantum computers.
+    I plan to integrate the [IBM Quantum API](https://quantum.ibm.com/). This will allow learners to toggle a switch inside the Qiskit Sandbox and submit their circuits to run on physical superconducting quantum computers.
 2.  **Automated Lab Assessments**:
     Introduce a backend grading service that automatically checks Jupyter notebook submissions via API, awarding XP or unlocking advanced badges on the main web application.
 3.  **Expanded Syllabus Modules**:
@@ -210,18 +210,18 @@ Ode to Quantum is built to scale into a larger educational framework:
 For deeper insight into the technical details and curriculum design of Ode to Quantum, review the following documentation files:
 
 *   **[References Page](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/REFERENCES.md)**: Academic citations, open-source library licenses, and generative AI disclosure details.
-*   **[Technical Documentation](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/DOCUMENTATION.md)**: Mathematical formulations of our custom simulator, Qiskit AST interpreter design, and React component architectures.
+*   **[Technical Documentation](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/DOCUMENTATION.md)**: Mathematical formulations of the custom simulator, Qiskit AST interpreter design, and React component architectures.
 *   **[Workflow Guide](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/WORKFLOW.md)**: Graphical pedagogical paths, developer git cycles, and local notebook synchronization guides.
 
 ---
 
 ## 📚 Attributions, Resources & Licensing
 
-In accordance with the WISER Education Challenge guidelines, we declare all educational references, software licenses, and AI design tools used in the development of this project.
+In accordance with the WISER Education Challenge guidelines, I declare all educational references, software licenses, and AI design tools used in the development of this project.
 
 ### Academic & Curricular References
 *   **Primary Textbook**: *Quantum Computation and Quantum Information* by Michael A. Nielsen & Isaac L. Chuang (Cambridge University Press). Used as the theoretical foundation for curriculum formulas, state vectors, and quantum gates.
-*   **Qiskit Documentation**: [IBM Quantum Learning & Guides](https://quantum.ibm.com/). Used to align our client-side sandbox commands and Jupiter notebooks with standard Qiskit SDK syntax.
+*   **Qiskit Documentation**: [IBM Quantum Learning & Guides](https://quantum.ibm.com/). Used to align my client-side sandbox commands and Jupiter notebooks with standard Qiskit SDK syntax.
 *   **Mathematical Visualizations**: *Essence of linear algebra* video series by Grant Sanderson ([3Blue1Brown](https://www.3blue1brown.com/)). Inspired the visual breakdown of vector projections and basis transformations.
 *   **Bloch Sphere Interaction**: Reference designs adapted from the open-source [Bloch Sphere visual simulator](https://bloch.kherb.io/) by Kherb.
 
@@ -234,5 +234,5 @@ Ode to Quantum is built utilizing open-source libraries under the **MIT License*
 *   [Lucide React](https://github.com/lucide-react/lucide) (c) Lucide Contributors.
 
 ### Generative AI Disclosure
-*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the team.
+*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the developer (Emmanuella Adams).
 
