@@ -15,7 +15,7 @@ Ode to Quantum assumes no prior knowledge of quantum physics, guiding explorers 
 
 Watch the project walkthrough, pedagogical overview, and feature demonstration on YouTube:
 
-👉 **[Ode to Quantum - Video Demonstration (YouTube)](https://youtu.be/D_fZnNW7n4c)**
+[![Ode to Quantum - Video Demonstration](https://youtube.com)](https://youtu.be/D_fZnNW7n4c)
 
 ---
 
@@ -234,5 +234,5 @@ Ode to Quantum is built utilizing open-source libraries under the **MIT License*
 *   [Lucide React](https://github.com/lucide-react/lucide) (c) Lucide Contributors.
 
 ### Generative AI Disclosure
-*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the developer (Emmanuella Adams).
+*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the team.
 
