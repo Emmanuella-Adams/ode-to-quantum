@@ -234,5 +234,5 @@ Ode to Quantum is built utilizing open-source libraries under the **MIT License*
 *   [Lucide React](https://github.com/lucide-react/lucide) (c) Lucide Contributors.
 
 ### Generative AI Disclosure
-*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the team.
+*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally.
 
