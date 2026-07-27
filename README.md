@@ -202,3 +202,37 @@ Ode to Quantum is built to scale into a larger educational framework:
     Introduce new mission chains for **Quantum Cryptography** (BB84 Protocol) and **Quantum Error Correction** (surface codes, Shor 9-qubit code).
 4.  **Classroom Dashboard for Educators**:
     Provide an interface for teachers to group students, monitor their telemetry progress, deploy custom Qiskit sandbox assignments, and review grades.
+
+---
+
+## 📂 Detailed Project Documentation
+
+For deeper insight into the technical details and curriculum design of Ode to Quantum, review the following documentation files:
+
+*   **[References Page](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/REFERENCES.md)**: Academic citations, open-source library licenses, and generative AI disclosure details.
+*   **[Technical Documentation](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/DOCUMENTATION.md)**: Mathematical formulations of our custom simulator, Qiskit AST interpreter design, and React component architectures.
+*   **[Workflow Guide](file:///c:/Users/Lenovo/Downloads/ode-to-quantum/docs/WORKFLOW.md)**: Graphical pedagogical paths, developer git cycles, and local notebook synchronization guides.
+
+---
+
+## 📚 Attributions, Resources & Licensing
+
+In accordance with the WISER Education Challenge guidelines, we declare all educational references, software licenses, and AI design tools used in the development of this project.
+
+### Academic & Curricular References
+*   **Primary Textbook**: *Quantum Computation and Quantum Information* by Michael A. Nielsen & Isaac L. Chuang (Cambridge University Press). Used as the theoretical foundation for curriculum formulas, state vectors, and quantum gates.
+*   **Qiskit Documentation**: [IBM Quantum Learning & Guides](https://quantum.ibm.com/). Used to align our client-side sandbox commands and Jupiter notebooks with standard Qiskit SDK syntax.
+*   **Mathematical Visualizations**: *Essence of linear algebra* video series by Grant Sanderson ([3Blue1Brown](https://www.3blue1brown.com/)). Inspired the visual breakdown of vector projections and basis transformations.
+*   **Bloch Sphere Interaction**: Reference designs adapted from the open-source [Bloch Sphere visual simulator](https://bloch.kherb.io/) by Kherb.
+
+### Open-Source Libraries
+Ode to Quantum is built utilizing open-source libraries under the **MIT License**:
+*   [React](https://github.com/facebook/react) (c) Meta Platforms, Inc.
+*   [Vite](https://github.com/vitejs/vite) (c) Yosuke Hasegawa, Vite contributors.
+*   [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) (c) Tailwind Labs.
+*   [Motion](https://github.com/motiondivision/motion) (c) Matt Perry.
+*   [Lucide React](https://github.com/lucide-react/lucide) (c) Lucide Contributors.
+
+### Generative AI Disclosure
+*   **Coding Assistant**: Generative AI tools (Antigravity IDE running Google Gemini) were utilized during development to assist with layout styling, structural refactoring of components, drafting test scenarios, and compiling comprehensive markdown documentation. All compiled code and simulations were verified and tested locally by the team.
+
